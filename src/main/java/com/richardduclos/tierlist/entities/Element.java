@@ -7,7 +7,7 @@ public class Element {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private Integer id;
 
     private String imagePath;
 
@@ -16,7 +16,7 @@ public class Element {
     @ManyToOne
     @JoinColumn(name = "rank_id")
     private Rank rank;
-    public Element(String id, String imagePath, Integer order) {
+    public Element(Integer id, String imagePath, Integer order) {
         this.id = id;
         this.imagePath = imagePath;
         this.order = order;
@@ -32,11 +32,11 @@ public class Element {
 
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
