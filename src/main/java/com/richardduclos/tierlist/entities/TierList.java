@@ -19,7 +19,7 @@ public class TierList {
     private String tag;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "users_id")
     private User owner;
 
     @OneToMany(mappedBy = "tierList")
