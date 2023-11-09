@@ -1,4 +1,4 @@
-package com.richardduclos.tierlist;
+package com.richardduclos.tierlist.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

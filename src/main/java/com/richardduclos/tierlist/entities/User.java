@@ -5,23 +5,22 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    private Boolean isAdmin = false;
 
     private String username;
 
@@ -29,23 +28,35 @@ public class User {
 
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @OneToMany(mappedBy = "owner")
     private Set<TierList> tierLists = new HashSet<>();
 
-    public User(UUID id, Boolean isAdmin, String username, String email, String password) {
-        this.id = id;
-        this.isAdmin = isAdmin;
-        this.username = username;
-        this.email = email;
-        this.password = password;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
-    public User(Boolean isAdmin, String username, String email, String password) {
-        this.id = id;
-        this.isAdmin = isAdmin;
-        this.username = username;
-        this.email = email;
-        this.password = password;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
 //    public UUID getId() {

@@ -1,8 +1,8 @@
 package com.richardduclos.tierlist.repositories;
 
 import com.richardduclos.tierlist.entities.Element;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ElementRepository extends CrudRepository<Element, Integer> {
+public interface ElementRepository extends JpaRepository<Element, Integer> {
 
 }
