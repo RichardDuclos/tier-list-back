@@ -1,8 +1,16 @@
 package com.richardduclos.tierlist.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Element {
 
     @Id
@@ -16,43 +24,4 @@ public class Element {
     @ManyToOne
     @JoinColumn(name = "rank_id")
     private Rank rank;
-    public Element(Integer id, String imagePath, Integer order) {
-        this.id = id;
-        this.imagePath = imagePath;
-        this.order = order;
-    }
-
-    public Element(String imagePath, Integer order) {
-        this.imagePath = imagePath;
-        this.order = order;
-    }
-
-
-    public Element() {
-
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
-
-    public Integer getOrder() {
-        return order;
-    }
-
-    public void setOrder(Integer order) {
-        this.order = order;
-    }
 }
