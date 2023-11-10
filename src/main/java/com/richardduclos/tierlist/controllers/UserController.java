@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import java.net.http.HttpResponse;
 import java.util.UUID;
 
-@Controller
-@RequestMapping(path = "/users")
+@RestController
+@RequestMapping(path = "/api/v1/users")
 public class UserController {
 
     @Autowired

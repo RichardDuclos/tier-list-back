@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@Controller
-@RequestMapping(path = "/ranks")
+@RestController
+@RequestMapping(path = "/api/v1/ranks")
 public class RankController {
 
     @Autowired

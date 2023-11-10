@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-@Controller
-@RequestMapping("/tier-lists")
+@RestController
+@RequestMapping("/api/v1/tier-lists")
+@CrossOrigin(origins = "http://localhost:4200")
 public class TierListController {
 
     @Autowired
