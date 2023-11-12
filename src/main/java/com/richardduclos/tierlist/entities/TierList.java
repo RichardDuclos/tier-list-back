@@ -23,8 +23,7 @@ public class TierList {
 
     private String description;
 
-    private String tag;
-
+    private boolean draft = true;
     @ManyToOne
     @JoinColumn(name = "users_id")
     private User owner;

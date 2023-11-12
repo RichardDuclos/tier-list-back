@@ -21,6 +21,8 @@ public class Element {
 
     private Integer order;
 
+    private String tag;
+
     @ManyToOne
     @JoinColumn(name = "rank_id")
     private Rank rank;

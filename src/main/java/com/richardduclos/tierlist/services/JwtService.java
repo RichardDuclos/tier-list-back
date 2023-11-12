@@ -1,5 +1,6 @@
 package com.richardduclos.tierlist.services;
 
+import com.richardduclos.tierlist.entities.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -12,6 +13,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -46,7 +48,13 @@ public class JwtService {
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
-
+    public HashMap<String, Object> getExtraClaims(User user) {
+        HashMap<String, Object> claims = new HashMap<String, Object>();
+        claims.put("id", user.getId());
+        claims.put("email", user.getEmail());
+        claims.put("role", user.getRole());
+        return claims;
+    }
     public String generateToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails
@@ -56,12 +64,14 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 365))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 365)) // 1 year
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
-
-    private Claims extractAllClaims(String token) {
+    public String extractJwtFromAuthorization(String authorization) {
+        return authorization.substring(7);
+    }
+    public Claims extractAllClaims(String token) {
 
         return Jwts
                 .parserBuilder()
