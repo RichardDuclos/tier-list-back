@@ -17,9 +17,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Element {
 
-    interface Creation {}
+    public interface Creation {}
 
-    interface Update {}
+    public interface Update {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

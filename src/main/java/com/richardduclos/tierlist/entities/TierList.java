@@ -19,9 +19,9 @@ import java.util.Set;
 @AllArgsConstructor
 public class TierList {
 
-    interface Creation {}
+    public interface Creation {}
 
-    interface Update {}
+    public interface Update {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

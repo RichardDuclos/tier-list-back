@@ -1,4 +1,4 @@
-package com.richardduclos.tierlist._class.auth;
+package com.richardduclos.tierlist._class;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +14,7 @@ public class RegisterRequest {
 
     private String email;
 
-    private String password;
+    private String plainPassword;
+    private String plainPasswordConfirm;
 
 }

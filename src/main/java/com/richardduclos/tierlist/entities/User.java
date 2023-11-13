@@ -19,11 +19,12 @@ import java.util.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Valid
 public class User implements UserDetails {
 
     public interface Creation {}
 
-    interface Update {}
+    public interface Update {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -31,7 +32,7 @@ public class User implements UserDetails {
 
     @Column(unique = true)
     @NotBlank(message = "not-blank", groups = {Creation.class, Update.class})
-    @Length(max = 20, message = "max")
+    @Length(max = 20, message = "max",  groups = {Creation.class, Update.class})
     private String username;
 
     @Column(unique = true)

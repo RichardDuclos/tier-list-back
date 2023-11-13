@@ -1,13 +1,15 @@
 package com.richardduclos.tierlist.controllers;
 
-import com.richardduclos.tierlist._class.auth.AuthenticationRequest;
-import com.richardduclos.tierlist._class.auth.AuthenticationResponse;
-import com.richardduclos.tierlist._class.auth.RegisterRequest;
+import com.richardduclos.tierlist._class.AuthenticationRequest;
+import com.richardduclos.tierlist._class.AuthenticationResponse;
+import com.richardduclos.tierlist._class.RegisterRequest;
 import com.richardduclos.tierlist.entities.Role;
 import com.richardduclos.tierlist.entities.User;
 import com.richardduclos.tierlist.services.AuthenticationService;
 import com.richardduclos.tierlist.services.JwtService;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +20,20 @@ import java.util.UUID;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200")
+@Validated
 public class AuthenticationController {
+
+
+    @Autowired
+    private Validator validator; // Autowire the validator
+
     private final AuthenticationService authenticationService;
     private final JwtService jwtService;
-    @PostMapping("/register")
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody RegisterRequest request,
-            @Validated(User.Creation.class) User user
-    ) {
+            @RequestBody RegisterRequest request
+            ) {
+
         return ResponseEntity.ok(authenticationService.register(request));
     }
 

@@ -1,8 +1,8 @@
 package com.richardduclos.tierlist.services;
 
-import com.richardduclos.tierlist._class.auth.AuthenticationRequest;
-import com.richardduclos.tierlist._class.auth.AuthenticationResponse;
-import com.richardduclos.tierlist._class.auth.RegisterRequest;
+import com.richardduclos.tierlist._class.AuthenticationRequest;
+import com.richardduclos.tierlist._class.AuthenticationResponse;
+import com.richardduclos.tierlist._class.RegisterRequest;
 import com.richardduclos.tierlist.entities.Role;
 import com.richardduclos.tierlist.entities.User;
 import com.richardduclos.tierlist.repositories.UserRepository;
@@ -25,7 +25,7 @@ public class AuthenticationService {
         var user = User.builder()
                 .email(request.getEmail())
                 .username(request.getUsername())
-                .password(passwordEncoder.encode(request.getPassword()))
+                .password(passwordEncoder.encode(request.getPlainPassword()))
                 .role(Role.USER)
                 .build();
         userRepository.save(user);
