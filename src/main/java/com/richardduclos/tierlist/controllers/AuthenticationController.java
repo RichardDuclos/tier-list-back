@@ -9,6 +9,7 @@ import com.richardduclos.tierlist.services.AuthenticationService;
 import com.richardduclos.tierlist.services.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -22,10 +23,10 @@ public class AuthenticationController {
     private final JwtService jwtService;
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody RegisterRequest request
+            @RequestBody RegisterRequest request,
+            @Validated(User.Creation.class) User user
     ) {
         return ResponseEntity.ok(authenticationService.register(request));
-
     }
 
     @PostMapping("/login")

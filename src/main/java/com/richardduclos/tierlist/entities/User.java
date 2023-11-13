@@ -21,7 +21,7 @@ import java.util.*;
 @AllArgsConstructor
 public class User implements UserDetails {
 
-    interface Creation {}
+    public interface Creation {}
 
     interface Update {}
 

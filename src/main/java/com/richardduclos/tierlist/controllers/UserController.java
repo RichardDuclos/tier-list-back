@@ -18,13 +18,7 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
-
-    @PostMapping(path = "")
-    public @ResponseBody User create(@RequestBody User user) {
-        userRepository.save(user);
-        return user;
-    }
-
+    
     @PutMapping(path = "/{id}")
     public @ResponseBody User update(@RequestBody User user, @PathVariable UUID id) {
         user.setId(id);
