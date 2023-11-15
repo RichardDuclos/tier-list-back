@@ -11,6 +11,8 @@ import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,14 +49,9 @@ public class AuthenticationController {
 
     @GetMapping("/me")
     public User me (
-        @RequestHeader(name="Authorization") String authHeader
+            @AuthenticationPrincipal UserDetails userDetails
+
     ) {
-        String jwt = jwtService.extractJwtFromAuthorization(authHeader);
-        var claims = jwtService.extractAllClaims(jwt);
-        User user = new User();
-        user.setId(UUID.fromString(claims.get("id").toString()));
-        user.setUsername(claims.getSubject());
-        user.setRole(Role.valueOf(claims.get("role").toString()));
-        return user;
+        return (User) userDetails;
     }
 }

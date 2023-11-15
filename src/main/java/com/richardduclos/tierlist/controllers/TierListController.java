@@ -1,9 +1,6 @@
 package com.richardduclos.tierlist.controllers;
 
-import com.richardduclos.tierlist.entities.Element;
-import com.richardduclos.tierlist.entities.Rank;
-import com.richardduclos.tierlist.entities.TierList;
-import com.richardduclos.tierlist.entities.User;
+import com.richardduclos.tierlist.entities.*;
 import com.richardduclos.tierlist.exceptions.MvcEntityNotFoundException;
 import com.richardduclos.tierlist.repositories.TierListRepository;
 import com.richardduclos.tierlist.repositories.UserRepository;
@@ -38,8 +35,20 @@ public class TierListController {
     private ElementService elementService;
 
     @GetMapping("")
-    public @ResponseBody Iterable<TierList> getAll() {
-        return tierListRepository.findAll();
+    public @ResponseBody Iterable<TierList> getAll(
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        User user = (User) userDetails;
+        List<TierList> tierLists = tierListRepository.findAll();
+        List<TierList> filteredList = new ArrayList<>();
+        for (TierList tierList: tierLists) {
+            if(tierList.getApprovedState() == TierListState.APROVED
+                || (user.getId().equals(tierList.getOwner().getId()))
+            ) {
+                filteredList.add(tierList);
+            }
+        }
+        return filteredList;
     }
     @GetMapping("/{id}")
     public @ResponseBody TierList getOne(@PathVariable Integer id) {

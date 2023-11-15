@@ -38,7 +38,8 @@ public class TierList {
     @NotBlank(groups = {Update.class})
     private boolean draft = true;
 
-    private boolean adminApproved = false;
+    @Enumerated(EnumType.STRING)
+    private TierListState approvedState = TierListState.PENDING;
 
     @JsonIgnoreProperties(value = {"owner", "handler","hibernateLazyInitializer"}, allowSetters = true)
     @ManyToOne(fetch = FetchType.EAGER)
