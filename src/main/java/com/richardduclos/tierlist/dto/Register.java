@@ -1,4 +1,4 @@
-package com.richardduclos.tierlist._class;
+package com.richardduclos.tierlist.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequest {
+public class Register {
     private String username;
 
-    private String password;
+    private String email;
+
+    private String plainPassword;
+    private String plainPasswordConfirm;
 
 }

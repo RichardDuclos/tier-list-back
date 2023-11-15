@@ -1,8 +1,8 @@
 package com.richardduclos.tierlist.controllers;
 
-import com.richardduclos.tierlist._class.AuthenticationRequest;
+import com.richardduclos.tierlist.dto.Authentication;
 import com.richardduclos.tierlist._class.AuthenticationResponse;
-import com.richardduclos.tierlist._class.RegisterRequest;
+import com.richardduclos.tierlist.dto.Register;
 import com.richardduclos.tierlist.entities.Role;
 import com.richardduclos.tierlist.entities.User;
 import com.richardduclos.tierlist.services.AuthenticationService;
@@ -31,15 +31,16 @@ public class AuthenticationController {
     private final JwtService jwtService;
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody RegisterRequest request
+            @RequestBody Register request
             ) {
 
         return ResponseEntity.ok(authenticationService.register(request));
     }
 
+
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(
-            @RequestBody AuthenticationRequest request
+            @RequestBody Authentication request
     ) {
         return ResponseEntity.ok(authenticationService.login(request));
     }

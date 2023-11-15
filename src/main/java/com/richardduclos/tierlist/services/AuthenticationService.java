@@ -1,8 +1,8 @@
 package com.richardduclos.tierlist.services;
 
-import com.richardduclos.tierlist._class.AuthenticationRequest;
+import com.richardduclos.tierlist.dto.Authentication;
 import com.richardduclos.tierlist._class.AuthenticationResponse;
-import com.richardduclos.tierlist._class.RegisterRequest;
+import com.richardduclos.tierlist.dto.Register;
 import com.richardduclos.tierlist.entities.Role;
 import com.richardduclos.tierlist.entities.User;
 import com.richardduclos.tierlist.repositories.UserRepository;
@@ -21,7 +21,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public AuthenticationResponse register(Register request) {
         var user = User.builder()
                 .email(request.getEmail())
                 .username(request.getUsername())
@@ -36,7 +36,7 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse login(AuthenticationRequest request) {
+    public AuthenticationResponse login(Authentication request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),

@@ -1,21 +1,21 @@
 package com.richardduclos.tierlist.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Getter
+@Setter
 @Entity
-@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,13 +40,15 @@ public class Rank {
     @NotBlank(message = "not-blank", groups = {Update.class})
     private Integer order;
 
-    @ManyToOne
+    @JsonIgnoreProperties(value = {"tierlist", "handler","hibernateLazyInitializer"}, allowSetters = true)
+    @ManyToOne(fetch = FetchType.EAGER)
     @Valid
     @Null(groups = {Update.class}, message = "null")
     @NotNull(message = "not-null", groups = {Creation.class})
     @JoinColumn(name = "tier_list_id")
-    private TierList tierList;
+    private TierList tierlist;
 
-    @OneToMany(mappedBy = "rank")
+    @JsonIgnoreProperties(value = {"rank", "handler","hibernateLazyInitializer"}, allowSetters = true)
+    @OneToMany(mappedBy = "rank", fetch = FetchType.EAGER)
     private Set<Element> elements = new HashSet<>();
 }

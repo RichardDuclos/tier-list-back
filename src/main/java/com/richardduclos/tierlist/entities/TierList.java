@@ -1,19 +1,19 @@
 package com.richardduclos.tierlist.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Getter
+@Setter
 @Entity
-@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,17 +31,21 @@ public class TierList {
     @Length(max = 20, groups = {Creation.class}, message = "max-length")
     private String name;
 
-    @NotBlank(groups = {Creation.class})
+    @NotBlank(groups = {Creation.class}, message = "not-blank")
     @Length(max = 250, groups = {Creation.class}, message = "max-length")
     private String description;
 
     @NotBlank(groups = {Update.class})
     private boolean draft = true;
 
-    @ManyToOne
+    private boolean adminApproved = false;
+
+    @JsonIgnoreProperties(value = {"owner", "handler","hibernateLazyInitializer"}, allowSetters = true)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "users_id")
     private User owner;
 
-    @OneToMany(mappedBy = "tierList")
+    @JsonIgnoreProperties(value = {"tierlist", "handler","hibernateLazyInitializer"}, allowSetters = true)
+    @OneToMany(mappedBy = "tierlist", fetch = FetchType.EAGER)
     private Set<Rank> ranks = new HashSet<>();
 }

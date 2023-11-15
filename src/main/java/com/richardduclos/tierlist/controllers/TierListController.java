@@ -1,16 +1,26 @@
 package com.richardduclos.tierlist.controllers;
 
+import com.richardduclos.tierlist.entities.Element;
+import com.richardduclos.tierlist.entities.Rank;
 import com.richardduclos.tierlist.entities.TierList;
 import com.richardduclos.tierlist.entities.User;
 import com.richardduclos.tierlist.exceptions.MvcEntityNotFoundException;
 import com.richardduclos.tierlist.repositories.TierListRepository;
+import com.richardduclos.tierlist.repositories.UserRepository;
+import com.richardduclos.tierlist.services.ElementService;
+import com.richardduclos.tierlist.services.JwtService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.lang.annotation.*;
+import java.sql.SQLException;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/tier-lists")
@@ -18,7 +28,14 @@ import java.util.Optional;
 public class TierListController {
 
     @Autowired
+    private JwtService jwtService;
+    @Autowired
     private TierListRepository tierListRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ElementService elementService;
 
     @GetMapping("")
     public @ResponseBody Iterable<TierList> getAll() {
@@ -26,8 +43,24 @@ public class TierListController {
     }
     @GetMapping("/{id}")
     public @ResponseBody TierList getOne(@PathVariable Integer id) {
-        return  tierListRepository.findById(id)
-                .orElseThrow(() -> new MvcEntityNotFoundException(id));
+        var e = tierListRepository.findById(id);
+        if(e.isEmpty()) {
+            throw new MvcEntityNotFoundException(id);
+        }
+        TierList tierList = e.get();
+        for(Rank rank: tierList.getRanks()) {
+//            Set<Element> elements = new HashSet<>();
+            for(Element element: rank.getElements()) {
+                try {
+                    element = this.elementService.retrieveBlob(element);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+//            rank.setElements(elements);
+        }
+
+        return  tierList;
     }
 
     @DeleteMapping("/{id}")
@@ -40,9 +73,41 @@ public class TierListController {
     }
 
     @PostMapping(path = "")
-    public @ResponseBody TierList create(@RequestBody TierList tierList) {
+    public @ResponseBody TierList create(
+            @Validated(TierList.Creation.class) @RequestBody TierList tierList,
+            @AuthenticationPrincipal UserDetails userDetails
+
+    ) {
+        User user = (User) userDetails;
+        tierList.setOwner(user);
         tierListRepository.save(tierList);
         return tierList;
     }
+    @PutMapping(path = "/{id}")
+    public @ResponseBody TierList update(
+            @RequestBody TierList tierList,
+            @PathVariable Integer id,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        User user = (User) userDetails;
+
+        Optional<TierList> dbTierList = this.tierListRepository.findById(id);
+        if(dbTierList.isEmpty()) {
+            return null;
+        }
+        TierList initialTierList = dbTierList.get();
+
+        var owner = initialTierList.getOwner();
+        if(!initialTierList.getOwner().getId().equals(user.getId())) {
+            return null;
+        }
+        if(initialTierList.isDraft() && !tierList.isDraft()) {
+            initialTierList.setDraft(false);
+        }
+        tierListRepository.save(initialTierList);
+        return tierList;
+    }
+
+
 
 }
