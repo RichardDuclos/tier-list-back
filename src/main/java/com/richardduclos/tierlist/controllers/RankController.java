@@ -1,12 +1,15 @@
 package com.richardduclos.tierlist.controllers;
 
 import com.richardduclos.tierlist.entities.Rank;
+import com.richardduclos.tierlist.entities.Role;
 import com.richardduclos.tierlist.entities.TierList;
 import com.richardduclos.tierlist.entities.User;
 import com.richardduclos.tierlist.exceptions.MvcEntityNotFoundException;
 import com.richardduclos.tierlist.repositories.RankRepository;
 import com.richardduclos.tierlist.repositories.TierListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +29,8 @@ public class RankController {
     private TierListRepository tierListRepository;
 
     @PostMapping(path = "")
-    public @ResponseBody Rank create(@RequestBody Rank rank) {
+    public @ResponseBody Rank create(@RequestBody Rank rank
+                                     ) {
         Optional<TierList> dbTierList = tierListRepository.findById(rank.getTierlist().getId());
         if(dbTierList.isPresent()) {
             TierList tierList = dbTierList.get();
@@ -37,13 +41,20 @@ public class RankController {
     }
 
     @PutMapping(path = "/{id}")
-    public @ResponseBody Rank update(@RequestBody Rank rank, @PathVariable Integer id) {
+    public @ResponseBody Rank update(@RequestBody Rank rank,
+                                     @PathVariable Integer id,
+                                     @AuthenticationPrincipal UserDetails userDetails
+                                     ) {
+        User user = (User) userDetails;
 
         Optional<Rank> dbRank = rankRepository.findById(rank.getId());
         if(dbRank.isEmpty()) {
             return null;
         }
         Rank initialRank = dbRank.get();
+        if(!initialRank.getTierlist().getOwner().getId().equals(user.getId()) && user.getRole()!= Role.ADMIN) {
+            return null;
+        }
         if (!Objects.equals(initialRank.getOrder(), rank.getOrder())) {
             initialRank.getTierlist().getRanks().forEach((Rank oldRank) -> {
                 if(Objects.equals(oldRank.getOrder(), rank.getOrder())) {

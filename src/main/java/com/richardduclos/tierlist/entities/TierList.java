@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
@@ -38,6 +39,7 @@ public class TierList {
     @NotBlank(groups = {Update.class})
     private boolean draft = true;
 
+    @Null(groups = {Creation.class})
     @Enumerated(EnumType.STRING)
     private TierListState approvedState = TierListState.PENDING;
 
@@ -47,6 +49,6 @@ public class TierList {
     private User owner;
 
     @JsonIgnoreProperties(value = {"tierlist", "handler","hibernateLazyInitializer"}, allowSetters = true)
-    @OneToMany(mappedBy = "tierlist", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "tierlist", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Rank> ranks = new HashSet<>();
 }

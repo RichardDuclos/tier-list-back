@@ -50,7 +50,8 @@ public class Element {
     @NotBlank(groups = {Update.class}, message = "not-blank")
     private Integer order;
 
-    @Null(groups = {Creation.class}, message = "null")
+    @NotNull(groups = {Creation.class}, message = "null")
+    @Null(groups = {Update.class}, message = "null")
     private String tag;
 
     @JsonIgnoreProperties(value = {"rank", "handler","hibernateLazyInitializer"}, allowSetters = true)

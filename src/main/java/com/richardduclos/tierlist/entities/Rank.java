@@ -49,6 +49,6 @@ public class Rank {
     private TierList tierlist;
 
     @JsonIgnoreProperties(value = {"rank", "handler","hibernateLazyInitializer"}, allowSetters = true)
-    @OneToMany(mappedBy = "rank", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "rank", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Element> elements = new HashSet<>();
 }

@@ -51,12 +51,21 @@ public class TierListController {
         return filteredList;
     }
     @GetMapping("/{id}")
-    public @ResponseBody TierList getOne(@PathVariable Integer id) {
+    public @ResponseBody TierList getOne(
+            @PathVariable Integer id,
+            @AuthenticationPrincipal UserDetails userDetails
+                                         ) {
+        User user = (User) userDetails;
         var e = tierListRepository.findById(id);
         if(e.isEmpty()) {
             throw new MvcEntityNotFoundException(id);
         }
         TierList tierList = e.get();
+        if((tierList.getApprovedState() == TierListState.PENDING) || (tierList.getApprovedState() == TierListState.REFUSED) ) {
+            if((!tierList.getOwner().getId().equals(user.getId())) && user.getRole() != Role.ADMIN) {
+                return null;
+            }
+        }
         for(Rank rank: tierList.getRanks()) {
 //            Set<Element> elements = new HashSet<>();
             for(Element element: rank.getElements()) {
@@ -92,30 +101,32 @@ public class TierListController {
         tierListRepository.save(tierList);
         return tierList;
     }
-    @PutMapping(path = "/{id}")
-    public @ResponseBody TierList update(
-            @RequestBody TierList tierList,
-            @PathVariable Integer id,
-            @AuthenticationPrincipal UserDetails userDetails
-    ) {
-        User user = (User) userDetails;
-
-        Optional<TierList> dbTierList = this.tierListRepository.findById(id);
-        if(dbTierList.isEmpty()) {
-            return null;
-        }
-        TierList initialTierList = dbTierList.get();
-
-        var owner = initialTierList.getOwner();
-        if(!initialTierList.getOwner().getId().equals(user.getId())) {
-            return null;
-        }
-        if(initialTierList.isDraft() && !tierList.isDraft()) {
-            initialTierList.setDraft(false);
-        }
-        tierListRepository.save(initialTierList);
-        return tierList;
-    }
+//    @PutMapping(path = "/{id}")
+//    public @ResponseBody TierList update(
+//            @RequestBody TierList tierList,
+//            @PathVariable Integer id,
+//            @AuthenticationPrincipal UserDetails userDetails
+//    ) {
+//        User user = (User) userDetails;
+//
+//        Optional<TierList> dbTierList = this.tierListRepository.findById(id);
+//        if(dbTierList.isEmpty()) {
+//            return null;
+//        }
+//        TierList initialTierList = dbTierList.get();
+//        if(!initialTierList.isDraft()) {
+//            return null;
+//        }
+//        var owner = initialTierList.getOwner();
+//        if(!initialTierList.getOwner().getId().equals(user.getId())) {
+//            return null;
+//        }
+//        if(initialTierList.isDraft() && !tierList.isDraft()) {
+//            initialTierList.setDraft(false);
+//        }
+//        tierListRepository.save(initialTierList);
+//        return tierList;
+//    }
 
 
 
